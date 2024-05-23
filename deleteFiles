@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Check if the file path containing paths is provided as an argument
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 <file-containing-paths>"
+  exit 1
+fi
+
+# Assign the file containing paths to a variable
+paths_file=$1
+
+# Check if the file exists
+if [ ! -f "$paths_file" ]; then
+  echo "File not found: $paths_file"
+  exit 1
+fi
+
+# Read the file line by line
+while IFS= read -r path; do
+  # Check if the path is a file or directory and delete accordingly
+  if [ -e "$path" ]; then
+    if [ -d "$path" ]; then
+      rm -r "$path"
+      echo "Deleted directory: $path"
+    else
+      rm "$path"
+      echo "Deleted file: $path"
+    fi
+  else
+    echo "Path not found: $path"
+  fi
+done < "$paths_file"
